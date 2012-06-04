@@ -21,44 +21,80 @@ var returnErrors = function(req, res){
   res.send(pResponse);
 };
 
-exports.account = function(req, res){
-  if(req.params.token)
-  {
-    brightcove.getAccount(req, function(pResponse){
-      res.contentType('json');
-      res.send(pResponse);
-    });
-  }
-  else
-  {
-    returnErrors(req, res);
+var v1 = {
+  account: function(req, res){
+    if(req.params.token)
+    {
+      brightcove.getAccount(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    }
+  },
+
+  player: function(req, res){
+    if(req.params.token && req.params.publisherId)
+    {
+      brightcove.getPlayer(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    }
+  },
+
+  allPlayers: function(req, res){
+    if(req.params.token && req.params.publisherId)
+    {
+      brightcove.getAllPlayers(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    }
+  },
+
+  video: function(req, res){
+    if(req.params.token)
+    {
+      brightcove.getVideo(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    } 
+  },
+
+  allVideos: function(req, res){
+    if(req.params.token)
+    {
+      brightcove.getAllVideos(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    } 
   }
 };
 
-exports.player = function(req, res){
-  if(req.params.token && req.params.publisherId)
-  {
-    brightcove.getPlayer(req, function(pResponse){
-      res.contentType('json');
-      res.send(pResponse);
-    });
-  }
-  else
-  {
-    returnErrors(req, res);
-  }
-};
-
-exports.video = function(req, res){
-  if(req.params.token)
-  {
-    brightcove.getVideo(req, function(pResponse){
-      res.contentType('json');
-      res.send(pResponse);
-    });
-  }
-  else
-  {
-    returnErrors(req, res);
-  } 
-};
+exports.v1_account = v1.account;
+exports.v1_player = v1.player;
+exports.v1_all_players = v1.allPlayers;
+exports.v1_video = v1.video;
+exports.v1_all_videos = v1.allVideos;
