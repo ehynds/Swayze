@@ -4,27 +4,61 @@
  */
 var brightcove = require('../controllers/brightcove.js');
 
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' })
+var returnErrors = function(req, res){
+  var errors = [];
+
+  if(!req.params.token)
+  {
+    errors.push({'Error' : 'When making any API request, the token is required.'});  
+  }
+
+  if(!req.params.publisherId)
+  {
+    errors.push({'Error' : 'When making any API request, the publisher ID is required.'});  
+  }
+  
+  res.contentType('json');
+  res.send(pResponse);
 };
 
 exports.account = function(req, res){
-  brightcove.getAccount(req.params.token, req.params.publisherId, function(pResponse){
-    res.contentType('json');
-    res.send(pResponse);
-  });
+  if(req.params.token)
+  {
+    brightcove.getAccount(req, function(pResponse){
+      res.contentType('json');
+      res.send(pResponse);
+    });
+  }
+  else
+  {
+    returnErrors(req, res);
+  }
 };
 
 exports.player = function(req, res){
-brightcove.getPlayer(req.params.token, req.params.playerId, function(pResponse){
-    res.contentType('json');
-    res.send(pResponse);
-  });
+  if(req.params.token && req.params.publisherId)
+  {
+    brightcove.getPlayer(req, function(pResponse){
+      res.contentType('json');
+      res.send(pResponse);
+    });
+  }
+  else
+  {
+    returnErrors(req, res);
+  }
 };
 
 exports.video = function(req, res){
-  brightcove.getVideo(req.params.token, req.params.videoId, function(pResponse){
-    res.contentType('json');
-    res.send(pResponse);
-  }); 
+  if(req.params.token)
+  {
+    brightcove.getVideo(req, function(pResponse){
+      res.contentType('json');
+      res.send(pResponse);
+    });
+  }
+  else
+  {
+    returnErrors(req, res);
+  } 
 };

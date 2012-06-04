@@ -1,11 +1,11 @@
 var http = require('http');
 
-var makeAPICall = function(token, path, additionalID, callback){
+var makeAPICall = function(token, path, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'data.brightcove.com'
     , port: 80
-    , path: path + additionalID
+    , path: path
     , headers: {'Authorization': 'Bearer ' + token}
   };
 
@@ -22,15 +22,61 @@ var makeAPICall = function(token, path, additionalID, callback){
   return apiResponse;
 };
 
-var getAccount = function(token, publisherID, callback){
-  makeAPICall(token, '/analytics-api/data/videocloud/account/', publisherID, function(apiResponse){
+var getAccount = function(req, callback){
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId;
+  makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
   });
 };
 
-var getPlayer = function(token, playerID, callback) {
+var getPlayer = function(req, callback) {
+  if(!req.params.playerId)
+  {
+    var error = {'Error' : 'When fetching player data, the player ID is required.'};
+  }
 
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player/' + req.params.playerId;
+
+  makeAPICall(req.params.token, path, function(apiResponse){
+    callback(apiResponse);
+  });
+};
+
+var getVideo = function(req, callback) {
+  if(!req.params.playerId)
+  {
+    var error = {'Error' : 'When fetching player data, the player ID is required.'};
+  }
+
+  var timeRange = '';
+  //only enters this block if one or both of the to and from request params were populated
+  if(req.params.toTime || req.params.fromTime)
+  {
+    //because of these defaults, the from time is optional (defaults to unix epoch) and to time is optional (defaults to current time)
+    var fromTime = 0
+    , toTime = new Date().getTime();
+
+    if(req.params.toTime)
+    {
+      toTime = req.params.toTime;
+    }
+
+    if(req.params.fromTime)
+    {
+      fromTime = req.params.fromTime;
+    }
+
+    timeRange = '?from=' + fromTime + '&to=' + toTime;
+  }
+
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId + timeRange;
+  console.log('Path: ' + path);
+
+  makeAPICall(req.params.token, path, function(apiResponse){
+    callback(apiResponse);
+  });
 };
 
 exports.getAccount = getAccount;
-// exports.getVideo = getVideo;
+exports.getPlayer = getPlayer;
+exports.getVideo = getVideo;

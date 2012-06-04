@@ -28,10 +28,13 @@ app.configure('production', function(){
 });
 
 // Routes
-app.get('/', routes.index);
-app.get('/api/v1/:format/account/:publisherId/:token', routes.account);
-app.get('/api/v1/:format/player/:playerId/:token', routes.player);
-app.get('/api/v1/:format/video/:videoId/:token', routes.video);
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/token::token', routes.account); //account
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.player); //player
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/token::token', routes.video); //video
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.player); //video in a player
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/to::toTime([0-9]+)/token::token', routes.video); //video with no from time
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/token::token', routes.video); //video with no to time
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/to::toTime([0-9]+)/token::token', routes.video); //video with both from and to
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
