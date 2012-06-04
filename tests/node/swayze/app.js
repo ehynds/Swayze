@@ -27,15 +27,11 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-
-var TOKENS = {
-  mashable: '14fc90987e4b0eeebd29e5ed3'
-};
-
 // Routes
 app.get('/', routes.index);
-app.get('/api/v1/:format/account/:publisherId', routes.account);
-// app.get('/api/v1/:format/:id', routes.video);
+app.get('/api/v1/:format/account/:publisherId/:token', routes.account);
+app.get('/api/v1/:format/player/:playerId/:token', routes.player);
+app.get('/api/v1/:format/video/:videoId/:token', routes.video);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

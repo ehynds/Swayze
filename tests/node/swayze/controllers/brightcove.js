@@ -1,20 +1,15 @@
 var http = require('http');
 
-var setHeader = function(res, token){
-  res.setHeader('Authorization: Bearer', token);
-};
-
-var getAccount = function(publisherID, callback){
+var makeAPICall = function(token, path, additionalID, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'data.brightcove.com'
     , port: 80
-    , path: '/analytics-api/data/videocloud/account/' + publisherID
-    , headers: {'Authorization': 'Bearer 14fc90987e4b0eeebd29e5ed3'}
+    , path: path + additionalID
+    , headers: {'Authorization': 'Bearer ' + token}
   };
 
   http.get(options, function(res){
-    console.dir(res);
     res.on('data', function(data){
       apiResponse += data;
     }).on('end', function(){
@@ -25,6 +20,16 @@ var getAccount = function(publisherID, callback){
   });
 
   return apiResponse;
+};
+
+var getAccount = function(token, publisherID, callback){
+  makeAPICall(token, '/analytics-api/data/videocloud/account/', publisherID, function(apiResponse){
+    callback(apiResponse);
+  });
+};
+
+var getPlayer = function(token, playerID, callback) {
+
 };
 
 exports.getAccount = getAccount;
