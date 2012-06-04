@@ -50,10 +50,38 @@ var v1 = {
     }
   },
 
+  allPlayers: function(req, res){
+    if(req.params.token && req.params.publisherId)
+    {
+      brightcove.getAllPlayers(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    }
+  },
+
   video: function(req, res){
     if(req.params.token)
     {
       brightcove.getVideo(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      returnErrors(req, res);
+    } 
+  },
+
+  allVideos: function(req, res){
+    if(req.params.token)
+    {
+      brightcove.getAllVideos(req, function(pResponse){
         res.contentType('json');
         res.send(pResponse);
       });
@@ -67,4 +95,6 @@ var v1 = {
 
 exports.v1_account = v1.account;
 exports.v1_player = v1.player;
+exports.v1_all_players = v1.allPlayers;
 exports.v1_video = v1.video;
+exports.v1_all_videos = v1.allVideos;

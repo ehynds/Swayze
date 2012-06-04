@@ -7,8 +7,16 @@ This project serves as a Node.js-powered API framework that sits in front of the
 ##To get player information:
 /api/v1/json/account/[publisher id]/player/[player id]/token:[token]
 
+##To get information on all players:
+/api/v1/json/account/[publisher id]/player/token:[token]
+_Caution: this will fetch all players and their corresponding analytics information from the account, and can potentiall be very slow._
+
 ##To get video information:
 /api/v1/json/account/[publisher id]/video/[video id]/token:[token]
+
+##To get video information:
+/api/v1/json/account/[publisher id]/video/token:[token]
+_Caution: this will fetch all of the videos and their corresponding analytics information from the account, and will almost definitely be very slow._
 
 ##To get video information for a player:
 /api/v1/json/account/[publisher id]/video/[video id]/player/[player id]/token:[token]

@@ -18,8 +18,6 @@ var makeAPICall = function(token, path, callback){
   }).on('error', function(e) {
     console.log("Got error: " + e.message);
   });
-
-  return apiResponse;
 };
 
 var getAccount = function(req, callback){
@@ -36,6 +34,14 @@ var getPlayer = function(req, callback) {
   }
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player/' + req.params.playerId;
+
+  makeAPICall(req.params.token, path, function(apiResponse){
+    callback(apiResponse);
+  });
+};
+
+var getAllPlayers = function(req, callback) {
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player';
 
   makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
@@ -70,7 +76,14 @@ var getVideo = function(req, callback) {
   }
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId + timeRange;
-  console.log('Path: ' + path);
+
+  makeAPICall(req.params.token, path, function(apiResponse){
+    callback(apiResponse);
+  });
+};
+
+var getAllVideos = function(req, callback){
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video';
 
   makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
@@ -79,4 +92,6 @@ var getVideo = function(req, callback) {
 
 exports.getAccount = getAccount;
 exports.getPlayer = getPlayer;
+exports.getAllPlayers = getAllPlayers;
+exports.getAllVideos = getAllVideos;
 exports.getVideo = getVideo;
