@@ -1,6 +1,10 @@
+//----------------------------------------------------------------------------------------- INIT
 var http = require('http');
+//----------------------------------------------------------------------------------------- 
 
-var makeAPICall = function(token, queryParams, callback){
+
+//----------------------------------------------------------------------------------------- PRIVATE
+var _makeAPICall = function(token, queryParams, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'api.brightcove.com'
@@ -23,16 +27,24 @@ var makeAPICall = function(token, queryParams, callback){
     console.log("Got error: " + e.message);
   })
 };
+//----------------------------------------------------------------------------------------- 
 
+
+//----------------------------------------------------------------------------------------- PUBLIC
 var getVideoById = function(token, videoID, callback){
   var options = {
     command: 'find_video_by_id'
     , video_id: videoID
   };
 
-  makeAPICall(token, options, function(apiResponse){
+  _makeAPICall(token, options, function(apiResponse){
     callback(apiResponse);
   });
 };
+//----------------------------------------------------------------------------------------- 
 
+
+//----------------------------------------------------------------------------------------- EXPORTS
 exports.getVideoById = getVideoById;
+
+//----------------------------------------------------------------------------------------- 
