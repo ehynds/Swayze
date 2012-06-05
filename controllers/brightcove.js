@@ -160,6 +160,12 @@ var getVideo = function(req, callback) {
 var getAllVideos = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video';
 
+  //setting a default limit of 10 if none is specified
+  if(!req.query.limit)
+  {
+    req.query.limit = 10;
+  }
+
   _makeAPICall(req, path, function(apiResponse){
     var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
 
@@ -170,7 +176,7 @@ var getAllVideos = function(req, callback){
         callback(analyticsApiResponse);
       });
     }
-    else if(analyticsApiResponse.length > 0)
+    else if(analyticsApiResponse.length > 0 && parseInt(req.query.limit) <= 10) //we don't want to be making a request for more than 10 videos - it's slow enough as it is
     {
       var videoIds = [];
 
