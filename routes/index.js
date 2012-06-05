@@ -115,9 +115,9 @@ var v1 = {
 //----------------------------------------------------------------------------------------- EXPORTS
 exports.v1_account = v1.account;
 exports.v1_player = v1.player;
-exports.v1_all_players = v1.allPlayers;
-exports.v1_video_in_player = v1.forVideoInPlayer;
+exports.v1_allPlayers = v1.allPlayers;
+exports.v1_videoInPlayer = v1.forVideoInPlayer;
 exports.v1_video = v1.video;
-exports.v1_all_videos = v1.allVideos;
+exports.v1_allVideos = v1.allVideos;
 //----------------------------------------------------------------------------------------- 
 
