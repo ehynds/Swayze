@@ -98,10 +98,23 @@ var getVideoById = function(req, videoID, callback){
     callback(apiResponse);
   });
 };
+
+var getVideosByIds = function(req, videoIDs, callback)
+{
+  var options = {
+    command: 'find_videos_by_ids'
+    , video_ids: videoIDs.join(',')
+    , video_fields: getVideoFields(req)
+  };
+
+  _makeAPICall(req.query.readAPIToken, options, function(apiResponse){
+    callback(apiResponse);
+  });
+}
 //----------------------------------------------------------------------------------------- 
 
 
 //----------------------------------------------------------------------------------------- EXPORTS
 exports.getVideoById = getVideoById;
-
+exports.getVideosByIds = getVideosByIds;
 //----------------------------------------------------------------------------------------- 

@@ -5,14 +5,16 @@ var readapi = require('../controllers/readapi.js');
 
 
 //----------------------------------------------------------------------------------------- PRIVATE
-var _makeAPICall = function(token, path, callback){
+var _makeAPICall = function(req, path, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'data.brightcove.com'
     , port: 80
     , path: path
-    , headers: {'Authorization': 'Bearer ' + token}
+    , headers: {'Authorization': 'Bearer ' + req.params.token}
   };
+
+  options.path += getQueryParams(req);  
 
   http.get(options, function(res){
     res.on('data', function(data){
@@ -24,13 +26,61 @@ var _makeAPICall = function(token, path, callback){
     console.log("HTTP Get Error: " + Error.message);
   });
 };
+
+var getQueryParams = function(req, path){
+  var queryParams = [];
+
+  //only enters this block if one or both of the to and from request params were populated
+  if(req.query.to || req.query.from)
+  {
+    //because of these defaults, the from time is optional (defaults to unix epoch) and 
+    //to time is optional (defaults to current time)
+    var fromTime = 0
+    , toTime = new Date().getTime();
+
+    if(req.query.to)
+    {
+      toTime = req.query.to;
+    }
+
+    if(req.query.from)
+    {
+      fromTime = req.query.from;
+    }
+
+    queryParams.push('from=' + fromTime);
+    queryParams.push('to=' + toTime);
+  }
+
+  if(req.query.sort)
+  {
+    queryParams.push('sort=' + req.query.sort);
+  }
+
+  if(req.query.limit)
+  {
+    queryParams.push('limit=' + req.query.limit);
+  }
+
+  if(req.query.skip)
+  {
+    queryParams.push('skip=' + req.query.skip);
+  }
+
+  if(queryParams.length > 0)
+  {
+    return '?' + queryParams.join('&');
+  }
+
+  return '';
+}
 //-----------------------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------------------------- PUBLIC
 var getAccount = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId;
-  _makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -43,7 +93,7 @@ var getPlayer = function(req, callback) {
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player/' + req.params.playerId;
 
-  _makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -53,7 +103,7 @@ var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId +
   '/video/' + req.params.videoId + 
   '/player/' + req.params.playerId;
 
-  _makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req, path, function(apiResponse){
     var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
 
     //if the read api token was included, make a request for that information 
@@ -75,7 +125,7 @@ var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId +
 var getAllPlayers = function(req, callback) {
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player';
 
-  _makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -84,33 +134,11 @@ var getVideo = function(req, callback) {
   if(!req.params.playerId)
   {
     var error = {'Error' : 'When fetching player data, the player ID is required.'};
-  }
+  }  
 
-  var timeRange = '';
-  //only enters this block if one or both of the to and from request params were populated
-  if(req.params.toTime || req.params.fromTime)
-  {
-    //because of these defaults, the from time is optional (defaults to unix epoch) and 
-    //to time is optional (defaults to current time)
-    var fromTime = 0
-    , toTime = new Date().getTime();
+  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId;
 
-    if(req.params.toTime)
-    {
-      toTime = req.params.toTime;
-    }
-
-    if(req.params.fromTime)
-    {
-      fromTime = req.params.fromTime;
-    }
-
-    timeRange = '?from=' + fromTime + '&to=' + toTime;
-  }
-
-  var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId + timeRange;
-
-  _makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req, path, function(apiResponse){
     var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
 
     //if the read api token was included, make a request for that information 
@@ -132,8 +160,51 @@ var getVideo = function(req, callback) {
 var getAllVideos = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video';
 
-  _makeAPICall(req.params.token, path, function(apiResponse){
-    callback(apiResponse);
+  _makeAPICall(req, path, function(apiResponse){
+    var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
+
+    if(analyticsApiResponse.video && req.query.readAPIToken)
+    {
+      readapi.getVideoById(req, analyticsApiResponse.video, function(readApiResponse){
+        analyticsApiResponse.video_data = JSON.parse(readApiResponse);
+        callback(analyticsApiResponse);
+      });
+    }
+    else if(analyticsApiResponse.length > 0)
+    {
+      var videoIds = [];
+
+      for(var i = 0; i < analyticsApiResponse.length; i++)
+      {
+        videoIds.push(analyticsApiResponse[i].video);
+      }
+
+      if(videoIds.length > 0)
+      {
+        readapi.getVideosByIds(req, videoIds, function(readApiResponse){
+          var readApiResponse = JSON.parse(readApiResponse);
+
+          for(var i = 0; i < readApiResponse.items.length; i++)
+          {
+            var videoData = readApiResponse.items[i];
+            
+            for(var j = 0; j < analyticsApiResponse.length; j++)
+            {
+              if(parseInt(analyticsApiResponse[j].video) == videoData.id)
+              {
+                analyticsApiResponse[j].video_data = videoData;
+              }
+            }
+          }
+
+          callback(analyticsApiResponse);
+        });
+      }
+    }
+    else
+    {
+      callback(apiResponse);
+    }
   });
 };
 //-----------------------------------------------------------------------------------------
