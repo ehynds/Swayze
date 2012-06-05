@@ -1,5 +1,6 @@
 //----------------------------------------------------------------------------------------- INIT
 var http = require('http');
+var querystring = require('querystring');
 var readapi = require('../controllers/readapi.js');
 //----------------------------------------------------------------------------------------- 
 
@@ -7,7 +8,7 @@ var readapi = require('../controllers/readapi.js');
 //----------------------------------------------------------------------------------------- PRIVATE
 var _makeAPICall = function(req, path, callback){
   var apiResponse = ''
-  , options = { //get a user's gists
+  , options = {
     host: 'data.brightcove.com'
     , port: 80
     , path: path
@@ -15,6 +16,7 @@ var _makeAPICall = function(req, path, callback){
   };
 
   options.path += getQueryParams(req);  
+  console.log("path: " + options.path);
 
   http.get(options, function(res){
     res.on('data', function(data){
@@ -28,7 +30,7 @@ var _makeAPICall = function(req, path, callback){
 };
 
 var getQueryParams = function(req, path){
-  var queryParams = [];
+  var queryParams = {};
 
   //only enters this block if one or both of the to and from request params were populated
   if(req.query.to || req.query.from)
@@ -48,28 +50,28 @@ var getQueryParams = function(req, path){
       fromTime = req.query.from;
     }
 
-    queryParams.push('from=' + fromTime);
-    queryParams.push('to=' + toTime);
+    queryParams.from = fromTime;
+    queryParams.to = toTime;
   }
 
   if(req.query.sort)
   {
-    queryParams.push('sort=' + req.query.sort);
+    queryParams.sort = req.query.sort;
   }
 
   if(req.query.limit)
   {
-    queryParams.push('limit=' + req.query.limit);
+    queryParams.limit = req.query.limit;
   }
 
   if(req.query.skip)
   {
-    queryParams.push('skip=' + req.query.skip);
+    queryParams.skip = req.query.skip;
   }
 
-  if(queryParams.length > 0)
+  if(queryParams)
   {
-    return '?' + queryParams.join('&');
+    return '?' + querystring.stringify(queryParams);
   }
 
   return '';

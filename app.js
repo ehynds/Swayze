@@ -33,9 +33,6 @@ app.get('/api/v1/:format/account/:publisherId([0-9]+)/player/:playerId([0-9]+)/t
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/token::token', routes.v1_allVideos); //all videos
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/token::token', routes.v1_video); //video
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.v1_videoInPlayer); //video in a player
-// app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/to::toTime([0-9]+)/token::token', routes.v1_video); //video with no from time
-// app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/token::token', routes.v1_video); //video with no to time
-// app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/to::toTime([0-9]+)/token::token', routes.v1_video); //video with both from and to
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
