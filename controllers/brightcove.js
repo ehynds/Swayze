@@ -1,4 +1,5 @@
 var http = require('http');
+var readapi = require('../controllers/readapi.js');
 
 var makeAPICall = function(token, path, callback){
   var apiResponse = ''
@@ -78,7 +79,19 @@ var getVideo = function(req, callback) {
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId + timeRange;
 
   makeAPICall(req.params.token, path, function(apiResponse){
-    callback(apiResponse);
+    var analyticsApiResponse = JSON.parse(apiResponse);
+
+    if(analyticsApiResponse.video && req.query.includeReadAPI == 'true' && req.query.readAPIToken)
+    {
+      readapi.getVideoById(req.query.readAPIToken, analyticsApiResponse.video, function(readApiResponse){
+        analyticsApiResponse.video_data = JSON.parse(readApiResponse);
+        callback(analyticsApiResponse);
+      });
+    }
+    else
+    {
+      callback(analyticsApiResponse);
+    }
   });
 };
 
