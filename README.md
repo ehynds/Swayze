@@ -35,3 +35,7 @@ The defaults for both fields are:
 
 * from: beginning of the Unix epoch
 * to: current timestamp
+
+
+#Helpful Info
+When parsing the timestamps in javascript, make sure to parseInt() on the timestamp itself before passing it to new Date();.

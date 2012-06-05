@@ -1,10 +1,6 @@
 var http = require('http');
 
-<<<<<<< HEAD
-var makeAPICall = function(token, path, callback){
-=======
 var makeAPICall = function(token, queryParams, callback){
->>>>>>> development
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'api.brightcove.com'
@@ -12,16 +8,11 @@ var makeAPICall = function(token, queryParams, callback){
     , path: '/services/library?token=' + token
   };
 
-<<<<<<< HEAD
-=======
   for(var param in queryParams)
   {
     options.path += '&' + param + '=' + queryParams[param];
   }
 
-  console.log(options.path);
-
->>>>>>> development
   http.get(options, function(res){
     res.on('data', function(data){
       apiResponse += data;
@@ -33,10 +24,6 @@ var makeAPICall = function(token, queryParams, callback){
   })
 };
 
-<<<<<<< HEAD
-var getVideoById = function(videoID, readToken){
-  
-=======
 var getVideoById = function(token, videoID, callback){
   var options = {
     command: 'find_video_by_id'
@@ -46,7 +33,6 @@ var getVideoById = function(token, videoID, callback){
   makeAPICall(token, options, function(apiResponse){
     callback(apiResponse);
   });
->>>>>>> development
 };
 
 exports.getVideoById = getVideoById;

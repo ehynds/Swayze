@@ -16,8 +16,8 @@ var makeAPICall = function(token, path, callback){
     }).on('end', function(){
       callback(apiResponse);
     });
-  }).on('error', function(e) {
-    console.log("Got error: " + e.message);
+  }).on('error', function(error) {
+    console.log("HTTP Get Error: " + Error.message);
   });
 };
 
@@ -80,7 +80,7 @@ var getVideo = function(req, callback) {
 
   makeAPICall(req.params.token, path, function(apiResponse){
     var analyticsApiResponse = JSON.parse(apiResponse);
-
+    
     if(analyticsApiResponse.video && req.query.readAPIToken)
     {
       readapi.getVideoById(req.query.readAPIToken, analyticsApiResponse.video, function(readApiResponse){
