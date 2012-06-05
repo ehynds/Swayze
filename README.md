@@ -9,14 +9,19 @@ This project serves as a Node.js-powered API framework that sits in front of the
 
 ##To get information on all players:
 /api/v1/json/account/[publisher id]/player/token:[token]
-_Caution: this will fetch all players and their corresponding analytics information from the account, and can potentiall be very slow._
+
+*__Caution: this will fetch all players and their corresponding analytics information from the account, and can potentiall be very slow.__*
 
 ##To get video information:
 /api/v1/json/account/[publisher id]/video/[video id]/token:[token]
 
 ##To get video information:
 /api/v1/json/account/[publisher id]/video/token:[token]
-_Caution: this will fetch all of the videos and their corresponding analytics information from the account, and will almost definitely be very slow._
+
+*__Caution: this will fetch all of the videos and their corresponding analytics information from the account, and will almost definitely be very slow.__*
+
+##To get video information including information from the Read API:
+/api/v1/json/account/[publisher id]/video/[video id]/token:[token]?includeReadAPI=true&readAPIToken=[read api token]
 
 ##To get video information for a player:
 /api/v1/json/account/[publisher id]/video/[video id]/player/[player id]/token:[token]
