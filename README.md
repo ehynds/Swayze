@@ -37,6 +37,10 @@ The defaults for both fields are:
 * from: beginning of the Unix epoch
 * to: current timestamp
 
+##To override or update the video fields being retrieved with video information that includes Read API calls:
+Pass a comma-separated list of the specific video fields you're looking to fetch (e.g. videoFields=id,name,customFields).
+
+If you only want to add additional fields to the request and not completely override the entire list, pass in updateVideoFields=true as well as the list of video fields you're looking to add (e.g. videoFields=customFields&updateVideoFields=true).
 
 #Helpful Info
 * When parsing the timestamps in javascript, make sure to parseInt() on the timestamp itself before passing it to new Date();.
