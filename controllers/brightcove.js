@@ -81,7 +81,7 @@ var getVideo = function(req, callback) {
   makeAPICall(req.params.token, path, function(apiResponse){
     var analyticsApiResponse = JSON.parse(apiResponse);
 
-    if(analyticsApiResponse.video && req.query.includeReadAPI == 'true' && req.query.readAPIToken)
+    if(analyticsApiResponse.video && req.query.readAPIToken)
     {
       readapi.getVideoById(req.query.readAPIToken, analyticsApiResponse.video, function(readApiResponse){
         analyticsApiResponse.video_data = JSON.parse(readApiResponse);
