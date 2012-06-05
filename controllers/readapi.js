@@ -31,13 +31,13 @@ var _makeAPICall = function(token, queryParams, callback){
 
 
 //----------------------------------------------------------------------------------------- PUBLIC
-var getVideoById = function(token, videoID, callback){
+var getVideoById = function(req, videoID, callback){
   var options = {
     command: 'find_video_by_id'
     , video_id: videoID
   };
 
-  _makeAPICall(token, options, function(apiResponse){
+  _makeAPICall(req.query.readAPIToken, options, function(apiResponse){
     callback(apiResponse);
   });
 };

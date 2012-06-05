@@ -12,6 +12,11 @@ This project serves as a Node.js-powered API framework that sits in front of the
 
 *__Caution: this will fetch all players and their corresponding analytics information from the account, and can potentiall be very slow.__*
 
+##To get video information for a player:
+/api/v1/json/account/[publisher id]/video/[video id]/player/[player id]/token:[token]
+
+_To get video information including information from the Read API add the query param ?readAPIToken=[read api token] to the end of the URL._
+
 ##To get video information:
 /api/v1/json/account/[publisher id]/video/[video id]/token:[token]
 
@@ -20,11 +25,7 @@ This project serves as a Node.js-powered API framework that sits in front of the
 
 *__Caution: this will fetch all of the videos and their corresponding analytics information from the account, and will almost definitely be very slow.__*
 
-##To get video information including information from the Read API:
-/api/v1/json/account/[publisher id]/video/[video id]/token:[token]?readAPIToken=[read api token]
-
-##To get video information for a player:
-/api/v1/json/account/[publisher id]/video/[video id]/player/[player id]/token:[token]
+_To get video information including information from the Read API add the query param ?readAPIToken=[read api token] to the end of the URL._
 
 ##To get video information with a date rage:
 /api/v1/json/account/[publisher id]/video/[video id]/from:0/to:123456789/token:[token]
@@ -38,4 +39,5 @@ The defaults for both fields are:
 
 
 #Helpful Info
-When parsing the timestamps in javascript, make sure to parseInt() on the timestamp itself before passing it to new Date();.
+* When parsing the timestamps in javascript, make sure to parseInt() on the timestamp itself before passing it to new Date();.
+

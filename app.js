@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -29,11 +28,11 @@ app.configure('production', function(){
 
 // Routes
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/token::token', routes.v1_account); //account
-app.get('/api/v1/:format/account/:publisherId([0-9]+)/player/token::token', routes.v1_all_players); //all players
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/player/token::token', routes.v1_allPlayers); //all players
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.v1_player); //player
-app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/token::token', routes.v1_all_videos); //all videos
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/token::token', routes.v1_allVideos); //all videos
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/token::token', routes.v1_video); //video
-app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.v1_player); //video in a player
+app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/player/:playerId([0-9]+)/token::token', routes.v1_videoInPlayer); //video in a player
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/to::toTime([0-9]+)/token::token', routes.v1_video); //video with no from time
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/token::token', routes.v1_video); //video with no to time
 app.get('/api/v1/:format/account/:publisherId([0-9]+)/video/:videoId([0-9]+)/from::fromTime([0-9]+)/to::toTime([0-9]+)/token::token', routes.v1_video); //video with both from and to
