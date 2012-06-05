@@ -43,6 +43,7 @@ var _makeAPICall = function(token, queryParams, callback){
   })
 };
 
+ 
 var getVideoFields = function(req){
   if(!req.query.videoFields)
   {
