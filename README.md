@@ -21,7 +21,7 @@ This project serves as a Node.js-powered API framework that sits in front of the
 *__Caution: this will fetch all of the videos and their corresponding analytics information from the account, and will almost definitely be very slow.__*
 
 ##To get video information including information from the Read API:
-/api/v1/json/account/[publisher id]/video/[video id]/token:[token]?includeReadAPI=true&readAPIToken=[read api token]
+/api/v1/json/account/[publisher id]/video/[video id]/token:[token]?readAPIToken=[read api token]
 
 ##To get video information for a player:
 /api/v1/json/account/[publisher id]/video/[video id]/player/[player id]/token:[token]
@@ -35,3 +35,7 @@ The defaults for both fields are:
 
 * from: beginning of the Unix epoch
 * to: current timestamp
+
+
+#Helpful Info
+When parsing the timestamps in javascript, make sure to parseInt() on the timestamp itself before passing it to new Date();.

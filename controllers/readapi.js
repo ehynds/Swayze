@@ -1,10 +1,10 @@
+//----------------------------------------------------------------------------------------- INIT
 var http = require('http');
+//----------------------------------------------------------------------------------------- 
 
-<<<<<<< HEAD
-var makeAPICall = function(token, path, callback){
-=======
-var makeAPICall = function(token, queryParams, callback){
->>>>>>> development
+
+//----------------------------------------------------------------------------------------- PRIVATE
+var _makeAPICall = function(token, queryParams, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'api.brightcove.com'
@@ -12,16 +12,11 @@ var makeAPICall = function(token, queryParams, callback){
     , path: '/services/library?token=' + token
   };
 
-<<<<<<< HEAD
-=======
   for(var param in queryParams)
   {
     options.path += '&' + param + '=' + queryParams[param];
   }
 
-  console.log(options.path);
-
->>>>>>> development
   http.get(options, function(res){
     res.on('data', function(data){
       apiResponse += data;
@@ -32,21 +27,24 @@ var makeAPICall = function(token, queryParams, callback){
     console.log("Got error: " + e.message);
   })
 };
+//----------------------------------------------------------------------------------------- 
 
-<<<<<<< HEAD
-var getVideoById = function(videoID, readToken){
-  
-=======
+
+//----------------------------------------------------------------------------------------- PUBLIC
 var getVideoById = function(token, videoID, callback){
   var options = {
     command: 'find_video_by_id'
     , video_id: videoID
   };
 
-  makeAPICall(token, options, function(apiResponse){
+  _makeAPICall(token, options, function(apiResponse){
     callback(apiResponse);
   });
->>>>>>> development
 };
+//----------------------------------------------------------------------------------------- 
 
+
+//----------------------------------------------------------------------------------------- EXPORTS
 exports.getVideoById = getVideoById;
+
+//----------------------------------------------------------------------------------------- 

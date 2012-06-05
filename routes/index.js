@@ -1,10 +1,10 @@
-
-/*
- * GET home page.
- */
+//----------------------------------------------------------------------------------------- INIT
 var brightcove = require('../controllers/brightcove.js');
+//----------------------------------------------------------------------------------------- 
 
-var returnErrors = function(req, res){
+
+//----------------------------------------------------------------------------------------- PRIVATE
+var _returnErrors = function(req, res){
   var errors = [];
 
   if(!req.params.token)
@@ -20,7 +20,10 @@ var returnErrors = function(req, res){
   res.contentType('json');
   res.send(pResponse);
 };
+//----------------------------------------------------------------------------------------- 
 
+
+//----------------------------------------------------------------------------------------- VERSION 1: PUBLIC
 var v1 = {
   account: function(req, res){
     if(req.params.token)
@@ -32,7 +35,7 @@ var v1 = {
     }
     else
     {
-      returnErrors(req, res);
+      _returnErrors(req, res);
     }
   },
 
@@ -46,7 +49,7 @@ var v1 = {
     }
     else
     {
-      returnErrors(req, res);
+      _returnErrors(req, res);
     }
   },
 
@@ -60,7 +63,7 @@ var v1 = {
     }
     else
     {
-      returnErrors(req, res);
+      _returnErrors(req, res);
     }
   },
 
@@ -74,7 +77,7 @@ var v1 = {
     }
     else
     {
-      returnErrors(req, res);
+      _returnErrors(req, res);
     } 
   },
 
@@ -88,13 +91,18 @@ var v1 = {
     }
     else
     {
-      returnErrors(req, res);
+      _returnErrors(req, res);
     } 
   }
 };
+//----------------------------------------------------------------------------------------- 
 
+
+//----------------------------------------------------------------------------------------- EXPORTS
 exports.v1_account = v1.account;
 exports.v1_player = v1.player;
 exports.v1_all_players = v1.allPlayers;
 exports.v1_video = v1.video;
 exports.v1_all_videos = v1.allVideos;
+//----------------------------------------------------------------------------------------- 
+

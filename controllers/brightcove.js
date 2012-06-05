@@ -1,7 +1,11 @@
+//----------------------------------------------------------------------------------------- INIT
 var http = require('http');
 var readapi = require('../controllers/readapi.js');
+//----------------------------------------------------------------------------------------- 
 
-var makeAPICall = function(token, path, callback){
+
+//----------------------------------------------------------------------------------------- PRIVATE
+var _makeAPICall = function(token, path, callback){
   var apiResponse = ''
   , options = { //get a user's gists
     host: 'data.brightcove.com'
@@ -16,14 +20,17 @@ var makeAPICall = function(token, path, callback){
     }).on('end', function(){
       callback(apiResponse);
     });
-  }).on('error', function(e) {
-    console.log("Got error: " + e.message);
+  }).on('error', function(error) {
+    console.log("HTTP Get Error: " + Error.message);
   });
 };
+//-----------------------------------------------------------------------------------------
 
+
+//----------------------------------------------------------------------------------------- PUBLIC
 var getAccount = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId;
-  makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -36,7 +43,7 @@ var getPlayer = function(req, callback) {
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player/' + req.params.playerId;
 
-  makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -44,7 +51,7 @@ var getPlayer = function(req, callback) {
 var getAllPlayers = function(req, callback) {
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player';
 
-  makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
   });
 };
@@ -78,10 +85,11 @@ var getVideo = function(req, callback) {
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId + timeRange;
 
-  makeAPICall(req.params.token, path, function(apiResponse){
-    var analyticsApiResponse = JSON.parse(apiResponse);
+  _makeAPICall(req.params.token, path, function(apiResponse){
+    var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
 
-    if(analyticsApiResponse.video && req.query.includeReadAPI == 'true' && req.query.readAPIToken)
+    //if the read api token was included, make a request for that information and add it to the response before sending it back
+    if(analyticsApiResponse.video && req.query.readAPIToken)
     {
       readapi.getVideoById(req.query.readAPIToken, analyticsApiResponse.video, function(readApiResponse){
         analyticsApiResponse.video_data = JSON.parse(readApiResponse);
@@ -98,13 +106,18 @@ var getVideo = function(req, callback) {
 var getAllVideos = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video';
 
-  makeAPICall(req.params.token, path, function(apiResponse){
+  _makeAPICall(req.params.token, path, function(apiResponse){
     callback(apiResponse);
   });
 };
+//-----------------------------------------------------------------------------------------
 
+
+//----------------------------------------------------------------------------------------- EXPORTS
 exports.getAccount = getAccount;
 exports.getPlayer = getPlayer;
 exports.getAllPlayers = getAllPlayers;
 exports.getAllVideos = getAllVideos;
 exports.getVideo = getVideo;
+
+
