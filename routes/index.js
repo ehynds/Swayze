@@ -53,6 +53,20 @@ var v1 = {
     }
   },
 
+  forVideoInPlayer: function(req, res){
+    if(req.params.token && req.params.videoId)
+    {
+      brightcove.getVideoInPlayer(req, function(pResponse){
+        res.contentType('json');
+        res.send(pResponse);
+      });
+    }
+    else
+    {
+      _returnErrors(req, res);
+    }
+  },
+
   allPlayers: function(req, res){
     if(req.params.token && req.params.publisherId)
     {
@@ -102,6 +116,7 @@ var v1 = {
 exports.v1_account = v1.account;
 exports.v1_player = v1.player;
 exports.v1_all_players = v1.allPlayers;
+exports.v1_video_in_player = v1.forVideoInPlayer;
 exports.v1_video = v1.video;
 exports.v1_all_videos = v1.allVideos;
 //----------------------------------------------------------------------------------------- 
