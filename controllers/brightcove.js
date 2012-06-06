@@ -20,6 +20,12 @@ var _makeAPICall = function(req, path, callback){
     res.on('data', function(data){
       apiResponse += data;
     }).on('end', function(){
+      try {
+        apiResponse = JSON.parse(apiResponse);
+      } catch(e) {
+        apiResponse = { error: apiResponse };
+      }
+
       callback(apiResponse);
     });
   }).on('error', function(error) {
@@ -80,9 +86,7 @@ var getQueryParams = function(req, path){
 //----------------------------------------------------------------------------------------- PUBLIC
 var getAccount = function(req, callback){
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId;
-  _makeAPICall(req, path, function(apiResponse){
-    callback(apiResponse);
-  });
+  _makeAPICall(req, path, callback);
 };
 
 var getPlayer = function(req, callback) {
@@ -93,9 +97,7 @@ var getPlayer = function(req, callback) {
 
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player/' + req.params.playerId;
 
-  _makeAPICall(req, path, function(apiResponse){
-    callback(apiResponse);
-  });
+  _makeAPICall(req, path, callback);
 };
 
 var getVideoInPlayer = function(req, callback){
@@ -104,30 +106,29 @@ var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId +
   '/player/' + req.params.playerId;
 
   _makeAPICall(req, path, function(apiResponse){
-    var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
-
     //if the read api token was included, make a request for that information 
     //and add it to the response before sending it back
-    if(analyticsApiResponse.video && req.query.readAPIToken)
+    if(apiResponse.video && req.query.readAPIToken)
     {
-      readapi.getVideoById(req, req.params.videoId, function(readApiResponse){
-        analyticsApiResponse.video_data = JSON.parse(readApiResponse);
-        callback(analyticsApiResponse);
+      readapi.getVideoById(req, req.params.videoId, function(err, readApiResponse){
+        if(!readApiResponse.error)
+        {
+          apiResponse.video_data = readApiResponse;
+        }
+
+        callback(apiResponse);
       });
     }
     else
     {
-      callback(analyticsApiResponse);
+      callback(apiResponse);
     }
   });
 };
 
 var getAllPlayers = function(req, callback) {
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/player';
-
-  _makeAPICall(req, path, function(apiResponse){
-    callback(apiResponse);
-  });
+  _makeAPICall(req, path, callback);
 };
 
 var getVideo = function(req, callback) {
@@ -139,20 +140,23 @@ var getVideo = function(req, callback) {
   var path = '/analytics-api/data/videocloud/account/' + req.params.publisherId + '/video/' + req.params.videoId;
 
   _makeAPICall(req, path, function(apiResponse){
-    var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
-
     //if the read api token was included, make a request for that information 
     //and add it to the response before sending it back
-    if(analyticsApiResponse.video && req.query.readAPIToken)
+    if(apiResponse.video && req.query.readAPIToken)
     {
-      readapi.getVideoById(req, analyticsApiResponse.video, function(readApiResponse){
-        analyticsApiResponse.video_data = JSON.parse(readApiResponse);
-        callback(analyticsApiResponse);
+      readapi.getVideoById(req, apiResponse.video, function(err, readApiResponse){
+        if(!readApiResponse.error)
+        {
+          apiResponse.video_data = readApiResponse;
+          return;
+        }
+
+        callback(apiResponse);
       });
     }
     else
     {
-      callback(analyticsApiResponse);
+      callback(apiResponse);
     }
   });
 };
@@ -167,43 +171,49 @@ var getAllVideos = function(req, callback){
   }
 
   _makeAPICall(req, path, function(apiResponse){
-    var analyticsApiResponse = JSON.parse(apiResponse); //have to convert this first so we can read info in it
-
-    if(analyticsApiResponse.video && req.query.readAPIToken)
+    if(apiResponse.video && req.query.readAPIToken)
     {
-      readapi.getVideoById(req, analyticsApiResponse.video, function(readApiResponse){
-        analyticsApiResponse.video_data = JSON.parse(readApiResponse);
-        callback(analyticsApiResponse);
+      readapi.getVideoById(req, apiResponse.video, function(readApiResponse){
+        if(!readApiResponse.error)
+        {
+          apiResponse.video_data = readApiResponse;
+        }
+
+        callback(apiResponse);
       });
     }
-    else if(analyticsApiResponse.length > 0 && parseInt(req.query.limit) <= 10) //we don't want to be making a request for more than 10 videos - it's slow enough as it is
+    else if(apiResponse.length > 0 && parseInt(req.query.limit) <= 10) //we don't want to be making a request for more than 10 videos - it's slow enough as it is
     {
       var videoIds = [];
 
-      for(var i = 0; i < analyticsApiResponse.length; i++)
+      for(var i = 0; i < apiResponse.length; i++)
       {
-        videoIds.push(analyticsApiResponse[i].video);
+        videoIds.push(apiResponse[i].video);
       }
 
       if(videoIds.length > 0)
       {
         readapi.getVideosByIds(req, videoIds, function(readApiResponse){
-          var readApiResponse = JSON.parse(readApiResponse);
+          if(readApiResponse.error)
+          {
+            callback(readApiResponse);
+            return;
+          }
 
           for(var i = 0; i < readApiResponse.items.length; i++)
           {
             var videoData = readApiResponse.items[i];
             
-            for(var j = 0; j < analyticsApiResponse.length; j++)
+            for(var j = 0; j < apiResponse.length; j++)
             {
-              if(parseInt(analyticsApiResponse[j].video) == videoData.id)
+              if(parseInt(apiResponse[j].video) == videoData.id)
               {
-                analyticsApiResponse[j].video_data = videoData;
+                apiResponse[j].video_data = videoData;
               }
             }
           }
 
-          callback(analyticsApiResponse);
+          callback(apiResponse);
         });
       }
     }

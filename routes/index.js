@@ -17,8 +17,7 @@ var _returnErrors = function(req, res){
     errors.push({'Error' : 'When making any API request, the publisher ID is required.'});  
   }
   
-  res.contentType('json');
-  res.send(pResponse);
+  res.json(pResponse);
 };
 //----------------------------------------------------------------------------------------- 
 
@@ -30,8 +29,7 @@ var v1 = {
     if(req.params.token)
     {
       brightcove.getAccount(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else
@@ -44,8 +42,7 @@ var v1 = {
     if(req.params.token && req.params.publisherId)
     {
       brightcove.getPlayer(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else
@@ -58,8 +55,7 @@ var v1 = {
     if(req.params.token && req.params.videoId)
     {
       brightcove.getVideoInPlayer(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else
@@ -72,8 +68,7 @@ var v1 = {
     if(req.params.token && req.params.publisherId)
     {
       brightcove.getAllPlayers(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else
@@ -86,8 +81,7 @@ var v1 = {
     if(req.params.token)
     {
       brightcove.getVideo(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else
@@ -100,8 +94,7 @@ var v1 = {
     if(req.params.token)
     {
       brightcove.getAllVideos(req, function(pResponse){
-        res.contentType('json');
-        res.send(pResponse);
+        res.json(pResponse);
       });
     }
     else

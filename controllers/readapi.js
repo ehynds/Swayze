@@ -36,6 +36,12 @@ var _makeAPICall = function(token, queryParams, callback){
     res.on('data', function(data){
       apiResponse += data;
     }).on('end', function(){
+      try {
+        apiResponse = JSON.parse(apiResponse);
+      } catch(e) {
+        apiResponse = { error: apiResponse };
+      }
+
       callback(apiResponse);
     });
   }).on('error', function(e) {
@@ -95,9 +101,7 @@ var getVideoById = function(req, videoID, callback){
     , video_fields: getVideoFields(req)
   };
 
-  _makeAPICall(req.query.readAPIToken, options, function(apiResponse){
-    callback(apiResponse);
-  });
+  _makeAPICall(req.query.readAPIToken, options, callback);
 };
 
 var getVideosByIds = function(req, videoIDs, callback)
@@ -108,9 +112,7 @@ var getVideosByIds = function(req, videoIDs, callback)
     , video_fields: getVideoFields(req)
   };
 
-  _makeAPICall(req.query.readAPIToken, options, function(apiResponse){
-    callback(apiResponse);
-  });
+  _makeAPICall(req.query.readAPIToken, options, callback);
 }
 //----------------------------------------------------------------------------------------- 
 
